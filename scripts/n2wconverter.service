@@ -1,0 +1,10 @@
+[Unit]
+Description=n2wconverter
+
+[Service]
+ExecStart=/opt/n2wconverter/bin/n2wconverter
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target
