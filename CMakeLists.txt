@@ -13,7 +13,9 @@ add_executable(n2wconverter ${COMMON_SRCS})
 target_link_libraries(n2wconverter pthread)
 
 install(TARGETS n2wconverter DESTINATION bin)
+install(FILES n2wconverter.conf DESTINATION etc)
 install(CODE "execute_process(COMMAND /bin/bash
     ${CMAKE_SOURCE_DIR}/scripts/post_install.sh ${CMAKE_SOURCE_DIR})")
 
+install(DIRECTORY DESTINATION var/log)
 

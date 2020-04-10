@@ -2,7 +2,7 @@
 Description=n2wconverter
 
 [Service]
-ExecStart=/opt/n2wconverter/bin/n2wconverter
+ExecStart=/opt/certi/bin/n2wconverter -f /opt/certi/etc/n2wconverter.conf
 Restart=always
 RestartSec=1
 

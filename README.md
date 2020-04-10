@@ -18,7 +18,7 @@ sudo apt install cmake git
 
 ## Configuration
 
-The post install script does the hard work :)
+The post install script does the hard work
 
 ```
 #!/bin/bash

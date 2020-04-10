@@ -16,8 +16,12 @@
 
 bool stop = true;
 
-Server::Server(int port) {
+Server::Server(std::string file) {
     std::cout << "Welcome to Server UDP Service!" << std::endl;
+    _config = new config::ConfigFile(file);
+    if (!test_config()) {
+        throw std::invalid_argument("server.cc: Config file error");
+    }
 
     _sock_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (_sock_fd < 0) {
@@ -32,7 +36,7 @@ Server::Server(int port) {
     bzero((char *) &serveraddr, sizeof(serveraddr));
     serveraddr.sin_family = AF_INET;
     serveraddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    serveraddr.sin_port = htons((uint16_t)port);
+    serveraddr.sin_port = htons((uint16_t)std::stoi(_config->Get("port")));
 
     if (bind(_sock_fd, (struct sockaddr *) &serveraddr,
         sizeof(serveraddr)) < 0) {
@@ -46,6 +50,7 @@ Server::Server(int port) {
 
 Server::~Server(void) {
     close(_sock_fd);
+    delete _config;
 }
 
 void Server::Main(void) {
@@ -76,6 +81,11 @@ void Server::Main(void) {
     }
 }
 
+bool Server::test_config(void) {
+    if (_config->Get("port").size() == 0) return false;
+    return true;
+}
+
 void handle_signal(int) {
     stop = false;
 }
@@ -84,6 +94,7 @@ void usage() {
     std::cout << "Server TCP Service" << std::endl;
     std::cout << "Usage:" << std::endl;
     std::cout << "\t-h: show help" << std::endl;
+    std::cout << "\t-f <file>: configuration file" << std::endl;
 }
 
 int main(int argc, char *argv[]) {
@@ -103,12 +114,16 @@ int main(int argc, char *argv[]) {
             case 'h':
                 usage();
                 return 0;
-            default:
+            case 'f':
+                file = optarg;
                 break;
+            default:
+                usage();
+                return 1;
             }
         }
 
-        server = new Server(3000);
+        server = new Server(file);
         server->Main();
         ret = 0;
     } catch (const std::exception& e) {
