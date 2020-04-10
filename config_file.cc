@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "config_file.h"
+#include "log.h"
 
 namespace config {
 
@@ -32,7 +33,7 @@ void ConfigFile::parse(void) {
     }
     cfgfile.close();
 
-    std::cout << "Configuration:" << std::endl;
+    LOG_DEBUG("config") << "Configuration:" << std::endl;
     for (std::map<std::string,std::string>::iterator it = _options.begin(); it!= _options.end(); ++it)
         std::cout << it->first << ": " << it->second << std::endl;
 }

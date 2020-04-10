@@ -1,0 +1,9 @@
+/opt/certi/var/log/*.log {
+    daily
+    size 500M
+    rotate 3
+    copytruncate
+    compress
+    missingok
+    notifempty
+}

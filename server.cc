@@ -11,16 +11,23 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include "log.h"
 #include "server.h"
 #include "client_reply.h"
 
 bool stop = true;
 
 Server::Server(std::string file) {
-    std::cout << "Welcome to Server UDP Service!" << std::endl;
+    LOG_INFO("server") << "Welcome to Server UDP Service!" << std::endl;
     _config = new config::ConfigFile(file);
     if (!test_config()) {
         throw std::invalid_argument("server.cc: Config file error");
+    }
+    _log_file = 0;
+    LOGLog::reporting_level(LOGLog::DEBUG);
+    if (_config->Get("log_file").compare("no")) {
+        _log_file = fopen(_config->Get("log_file").c_str(), "a+");
+        LOGLog::output_stream(_log_file);
     }
 
     _sock_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -61,8 +68,8 @@ void Server::Main(void) {
         request->fromlen = sizeof(struct sockaddr_in);
         request->sock_fd = accept (_sock_fd, (struct sockaddr *)&request->from,\
                 &request->fromlen);
-        if(n < 0) {
-            std::cout << "Problem with accept discard!!!!"
+        if(request->sock_fd < 0) {
+            LOG_ERROR("server") << "Problem with accept discard!!!!"
                 << std::endl;
             free(request);
             continue;
@@ -71,7 +78,7 @@ void Server::Main(void) {
             (struct sockaddr *)&request->from, &request->fromlen);
 
         if(n < 0) {
-            std::cout << "Problem with recvfrom discard!!!!"
+            LOG_ERROR("server") << "Problem with recvfrom discard!!!!"
                 << std::endl;
             free(request);
             continue;
@@ -83,6 +90,7 @@ void Server::Main(void) {
 
 bool Server::test_config(void) {
     if (_config->Get("port").size() == 0) return false;
+    if (_config->Get("log_file").size() == 0) return false;
     return true;
 }
 
@@ -91,7 +99,7 @@ void handle_signal(int) {
 }
 
 void usage() {
-    std::cout << "Server TCP Service" << std::endl;
+    std::cout << "Server Service" << std::endl;
     std::cout << "Usage:" << std::endl;
     std::cout << "\t-h: show help" << std::endl;
     std::cout << "\t-f <file>: configuration file" << std::endl;
@@ -127,10 +135,10 @@ int main(int argc, char *argv[]) {
         server->Main();
         ret = 0;
     } catch (const std::exception& e) {
-        std::cout << std::endl;
+        LOG_ERROR("server") << "Caught " << e.what() << std::endl;
         ret = 1;
     }
     if (server) delete server;
-    std::cout << "Term program" << std::endl;
+    LOG_DEBUG("server") << "Term program" << std::endl;
     return ret;
 }
