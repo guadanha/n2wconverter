@@ -61,7 +61,6 @@ Server::~Server(void) {
 }
 
 void Server::Main(void) {
-    int n;
     while (stop) {
         client_reply_request_t *request = (client_reply_request_t*) malloc(sizeof(client_reply_request_t));
         memset(request, 0, sizeof(client_reply_request_t));
@@ -74,16 +73,6 @@ void Server::Main(void) {
             free(request);
             continue;
         }
-        n = recvfrom(request->sock_fd, (char *)request->buf, CLIENT_REPLY_MSG_LEN, 0,
-            (struct sockaddr *)&request->from, &request->fromlen);
-
-        if(n < 0) {
-            LOG_ERROR("server") << "Problem with recvfrom discard!!!!"
-                << std::endl;
-            free(request);
-            continue;
-        }
-        request->buf_len = n;
         std::thread(client_reply_handle, request).detach();
     }
 }
