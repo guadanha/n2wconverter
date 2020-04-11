@@ -16,9 +16,9 @@ TEST_F(ParserTest, CheckConversion)
     ASSERT_EQ("menos mil e duzentos e trinta e quatro", GetPt());
     SetNumber(100);
     ASSERT_EQ("cem", GetPt());
-    ASSERT_EQ("dois ", number_convert(2, ""));
-    ASSERT_EQ("trinta e", number_convert(30, "e"));
-    ASSERT_EQ("cento ", hundred_number_convert(1));
-    ASSERT_EQ("duzentos ", hundred_number_convert(2));
+    ASSERT_EQ("dois ", pt_number_convert(2, ""));
+    ASSERT_EQ("trinta e", pt_number_convert(30, "e"));
+    ASSERT_EQ("cento ", pt_hundred_number_convert(1));
+    ASSERT_EQ("duzentos ", pt_hundred_number_convert(2));
 }
 #endif // _PARSER_TEST_H_

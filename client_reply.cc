@@ -8,11 +8,11 @@
 #include "parser.h"
 
 static void client_reply_send_msg_ack(std::string status, client_reply_request_t* request);
-static std::string client_reply_get_number(std::string buf);
+static std::string client_reply_get_response(std::string buf);
 static bool is_number(const std::string &str);
 
 static void client_reply_send_msg_ack(std::string status, client_reply_request_t* request) {
-    std::string data = "HTTP/1.1 200 OK\r\n\r\n { \"extenso\": \"" + status +"\" }\n";
+    std::string data = "HTTP/1.1 200 OK\r\n\r\n " + status + "\n";
     int n = sendto(request->sock_fd, (void *)data.c_str(), data.length(), 0, \
         (const struct sockaddr *)&request->from, request->fromlen);
     if (n < 0) {
@@ -20,9 +20,10 @@ static void client_reply_send_msg_ack(std::string status, client_reply_request_t
     }
 }
 
-static std::string client_reply_get_number(std::string buf) {
-    parser::ParserNumber* numb_word;
+static std::string client_reply_get_response(std::string buf) {
+    parser::ParserNumber numb_word;
     std::string word =  "Error";
+    int en_language = 0;
     int number;
     try {
         LOG_DEBUG("client_reply") << "recv: " << buf << std::endl;
@@ -30,22 +31,32 @@ static std::string client_reply_get_number(std::string buf) {
             LOG_ERROR("client_reply") << "HTTP GET command error" << std::endl;
             return "GET cmd error";
         };
+
         buf.erase(0, 5);
+        if (buf.compare(0,3,"en/") == 0) {
+            en_language = 1;
+            buf.erase(0, 3);
+            LOG_DEBUG("client_reply") << "English Language" << std::endl;
+        }
         std::string value = buf.substr(0, buf.find(" "));
 
         if (!is_number(value)) {
             LOG_ERROR("client_reply") << "Data is not a number" << std::endl;
             return "Invalid data";
         }
+
         number = std::stoi(value);
         if (number > 99999 || number < -99999) {
             LOG_ERROR("client_reply") << "Invalid data range" << std::endl;
             return "Invalid range";
         }
 
-        numb_word = new parser::ParserNumber(number);
-        word = numb_word->GetPt();
-        delete numb_word;
+        numb_word = parser::ParserNumber(number);
+        if (en_language) {
+            word = "{ \"full\": \"" + numb_word.GetEn() + "\" }";
+        } else {
+            word = "{ \"extenso\": \"" + numb_word.GetPt() + "\" }";
+        }
     }
     catch (const std::invalid_argument& ie) {
         LOG_ERROR("client_reply") << "invalid argument " << ie.what() << std::endl;
@@ -76,7 +87,7 @@ void client_reply_handle(client_reply_request_t* request) {
         request->buf_len = ret;
         std::string rcv_msg((char *)request->buf);
 
-        reply = client_reply_get_number(rcv_msg);
+        reply = client_reply_get_response(rcv_msg);
         client_reply_send_msg_ack(reply, request);
     }
     catch (const std::exception& e) {

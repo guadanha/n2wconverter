@@ -10,9 +10,10 @@ TEST(ClientTest, CheckClient)
     ASSERT_FALSE(is_number("asg12b"));
     ASSERT_FALSE(is_number("12b"));
     ASSERT_FALSE(is_number("a1"));
-    ASSERT_EQ("cem", client_reply_get_number("GET /100"));
-    ASSERT_EQ("GET cmd error", client_reply_get_number("100"));
-    ASSERT_EQ("Invalid range", client_reply_get_number("GET /100000"));
-    ASSERT_EQ("Invalid data", client_reply_get_number("GET /100a"));
+    ASSERT_EQ("{ \"extenso\": \"cem\" }", client_reply_get_response("GET /100"));
+    ASSERT_EQ("{ \"full\": \"one hundred\" }", client_reply_get_response("GET /en/100"));
+    ASSERT_EQ("GET cmd error", client_reply_get_response("100"));
+    ASSERT_EQ("Invalid range", client_reply_get_response("GET /100000"));
+    ASSERT_EQ("Invalid data", client_reply_get_response("GET /100a"));
 }
 #endif // _CLIENT_REPLY_TEST_H_

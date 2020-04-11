@@ -11,10 +11,12 @@ class ParserNumber {
 
     void SetNumber(int number);
     std::string GetPt(void);
+    std::string GetEn(void);
 
   protected:
-    std::string number_convert(int number, std::string suffix);
-    std::string hundred_number_convert(int number);
+    std::string pt_number_convert(int number, std::string suffix);
+    std::string pt_hundred_number_convert(int number);
+    std::string en_number_convert(int number, std::string suffix);
   private:
     int _number;
 };
