@@ -19,3 +19,4 @@ install(CODE "execute_process(COMMAND /bin/bash
 
 install(DIRECTORY DESTINATION var/log)
 
+add_subdirectory(tests)

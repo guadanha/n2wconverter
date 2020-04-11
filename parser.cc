@@ -26,6 +26,9 @@ ParserNumber::~ParserNumber(void) {
 
 }
 
+void ParserNumber::SetNumber(int number) {
+    _number = number;
+}
 
 std::string ParserNumber::number_convert(int number, std::string suffix) {
     if (number == 0) {
@@ -43,7 +46,7 @@ std::string ParserNumber::number_convert(int number, std::string suffix) {
     return med[number / 10] + suffix;
 }
 
-std::string ParserNumber::hundred_number_convert(int number, std::string suffix) {
+std::string ParserNumber::hundred_number_convert(int number) {
     if (number == 0) {
         return EMPTY;
     }
@@ -74,7 +77,7 @@ std::string ParserNumber::GetPt(void) {
     if ((number % 1000) == 100) {
         res += "cem ";
     } else {
-        res += hundred_number_convert(((number / 100) % 10), "");
+        res += hundred_number_convert(((number / 100) % 10));
     }
 
     if (number > 100 && number % 100 && (number % 1000) > 100) {

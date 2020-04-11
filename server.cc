@@ -42,7 +42,7 @@ Server::Server(std::string file) {
     struct sockaddr_in serveraddr;
     bzero((char *) &serveraddr, sizeof(serveraddr));
     serveraddr.sin_family = AF_INET;
-    serveraddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
     serveraddr.sin_port = htons((uint16_t)std::stoi(_config->Get("port")));
 
     if (bind(_sock_fd, (struct sockaddr *) &serveraddr,

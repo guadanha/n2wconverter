@@ -6,15 +6,16 @@ namespace parser {
 
 class ParserNumber {
   public:
-    ParserNumber(int number);
+    ParserNumber(int number = 0);
     ~ParserNumber(void);
 
+    void SetNumber(int number);
     std::string GetPt(void);
 
-  private:
+  protected:
     std::string number_convert(int number, std::string suffix);
-    std::string hundred_number_convert(int number, std::string suffix);
-
+    std::string hundred_number_convert(int number);
+  private:
     int _number;
 };
 

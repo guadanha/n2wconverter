@@ -35,7 +35,7 @@ void ConfigFile::parse(void) {
 
     LOG_DEBUG("config") << "Configuration:" << std::endl;
     for (std::map<std::string,std::string>::iterator it = _options.begin(); it!= _options.end(); ++it)
-        std::cout << it->first << ": " << it->second << std::endl;
+        LOG_DEBUG("config") << it->first << ": " << it->second << std::endl;
 }
 
 } // namespace config
