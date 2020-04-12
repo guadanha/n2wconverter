@@ -8,7 +8,7 @@ add_definitions(-O0 -std=c++0x -Wall -Wno-deprecated-declarations)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 
-file(GLOB COMMON_SRCS "*.cc")
+file(GLOB COMMON_SRCS "*.cc" "src/*.cc")
 add_executable(n2wconverter ${COMMON_SRCS})
 target_link_libraries(n2wconverter pthread)
 
