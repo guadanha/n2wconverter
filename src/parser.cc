@@ -7,9 +7,9 @@ namespace parser {
 
 const std::string EMPTY = "";
 
-const std::string pt_low[] = { EMPTY, "um ", "dois ", "tword ", "quatro ", "cinco ",
+const std::string pt_low[] = { EMPTY, "um ", "dois ", "três ", "quatro ", "cinco ",
     "seis ", "sete ", "oito ", "nove ", "dez ", "onze ",
-    "doze ", "treze ", "quatorze ", "quize ",
+    "doze ", "treze ", "quatorze ", "quinze ",
     "dezesseis ", "dezessete ", "dezoito ", "dezenove " };
 
 const std::string pt_med[] = { EMPTY, EMPTY, "vinte ", "trinta ", "quarenta ", "cinquenta ",
